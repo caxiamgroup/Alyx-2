@@ -11,7 +11,7 @@ component name="Form" output="no"
 		variables.overrideSubmitted = false;
 		variables.showClientSideValidationScript = true;
 		variables.encType = "";
-		variables.useFieldset = true;
+		variables.useFieldset = false;
 		variables.errorHeading = variables.alyx.getPlugin("snippets").getSnippet("errorheading", "errormessages");
 		resetFields();
 		return this;
@@ -99,7 +99,7 @@ component name="Form" output="no"
 	{
 		if (IsSimpleValue(arguments.dataset))
 		{
-			arguments.dataset = application.controller.getPlugin("forms").createDataset(argumentCollection = arguments);
+			arguments.dataset = variables.alyx.getPlugin("forms").createDataset(argumentCollection = arguments);
 		}
 
 		variables.fields[arguments.name].dataset = arguments.dataset;
@@ -293,7 +293,7 @@ component name="Form" output="no"
 	function validate()
 	{
 		var local = {};
-		local.formsPlugin = application.controller.getPlugin("forms");
+		local.formsPlugin = variables.alyx.getPlugin("forms");
 		variables.errors = ArrayNew(1);
 
 		// Validate individual fields
@@ -521,7 +521,7 @@ component name="Form" output="no"
 		{
 			if (! Len(arguments.errorClass))
 			{
-				 arguments.errorClass = application.controller.getSetting("formFieldErrorClass", "error");
+				 arguments.errorClass = variables.alyx.getSetting("formFieldErrorClass", "error");
 			}
 
 			if (Len(arguments.errorClass))
@@ -546,7 +546,7 @@ component name="Form" output="no"
 		{
 			if (! Len(arguments.requiredClass))
 			{
-				arguments.requiredClass = application.controller.getSetting("formFieldRequiredClass", "required");
+				arguments.requiredClass = variables.alyx.getSetting("formFieldRequiredClass", "required");
 			}
 			local.classes &= " " & arguments.requiredClass;
 		}

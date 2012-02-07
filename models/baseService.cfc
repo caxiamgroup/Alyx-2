@@ -3,11 +3,14 @@ component name="baseService" output="no" hint="Abstract base class for model ser
 	public function init(required alyx)
 	{
 		variables.alyx = arguments.alyx;
-		
+
 		variables.NONEXISTANT_FUNCTION_ON_SERVICE_ERROR = variables.alyx.createCustomException(
 			TYPE = "CONTROLLER.COMMON.NONEXISTANT_FUNCTION_ON_SERVICE_ERROR",
 			MESSAGE = "The function you are trying to call on the service does not exist"
 		);
+		local.serviceName = getMetadata(this).name;
+		variables.beanName = Left(local.serviceName, (Len(local.serviceName)-7));
+
 		return this;
 	}
 
@@ -23,9 +26,7 @@ component name="baseService" output="no" hint="Abstract base class for model ser
 
 	public function create()
 	{
-		local.serviceName = getMetadata(this).name;
-		local.beanName = Left(local.serviceName, (Len(local.serviceName)-7));
-		local.bean = CreateObject("component", local.beanName).init(service = this);
+		local.bean = CreateObject("component", variables.beanName).init(service = this);
 
 		return local.bean;
 	}

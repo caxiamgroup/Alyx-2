@@ -18,6 +18,8 @@
 	property name="mainEnvironment" type="string" default="prod";
 	property name="developmentURL"  type="string" default="caxiamgroup.net";
 
+	import alyx.tags.*;
+
 	variables.PERSISTENT_CONTEXT_KEY = "persistentContext";
 
 	variables.newError = createCustomException(
@@ -169,7 +171,7 @@
 
 	public function setupRequestStart()
 	{
-		new alyx.tags.setting(showDebugOutput = false);
+		new setting(showDebugOutput = false);
 
 		initActionFromURL();
 
@@ -227,6 +229,26 @@
 		catch (MissingTopLevelView error)
 		{
 			onMissingView(error.extendedInfo);
+		}
+	}
+
+	private function onMissingView(required path)
+	{
+
+		if (isDevEnvironment())
+		{
+			Throw(message="Missing View: #arguments.path#");
+		}
+		else
+		{
+			if(FileExists(ExpandPath("/404.cfm")))
+			{
+				include "/404.cfm";
+			}
+			else
+			{
+				Location(url="/index.cfm", addtoken="false");
+			}
 		}
 	}
 
@@ -290,7 +312,7 @@
 		{
 			local.serviceComponentPath = variables.models[local.serviceAction];
 		}
-		else if (ListLen(local.action, ".") > 1)
+		/*else if (ListLen(local.action, ".") > 1)
 		{
 			local.moduleName = ListFirst(arguments.service, ".");
 			local.modules = getModules();
@@ -303,7 +325,7 @@
 					local.serviceComponentPath = "/alyx.modules." & local.modules[local.moduleName].name & ".models." & ListChangeDelims(local.path, ".", "/") & "." & local.componentName & "Service";
 				}
 			}
-		}
+		}*/
 
 		return local.serviceComponentPath;
 	}
@@ -712,7 +734,7 @@
 		{
 			local.controllerPath = variables.controllers[arguments.name];
 		}
-		else
+		/*else
 		{
 			for (local.module in getModules())
 			{
@@ -722,7 +744,7 @@
 					break;
 				}
 			}
-		}
+		}*/
 
 		return local.controllerPath;
 	}
