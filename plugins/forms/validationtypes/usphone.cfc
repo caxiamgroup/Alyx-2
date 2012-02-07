@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="string">
-<cfscript>
+component output="no" extends="string"
+{
 
 	variables.regexp = "^(?:\([2-9]\d{2}\)\ ?|[2-9]\d{2}(?:\-?|\.\ ?))[2-9]\d{2}[-. ]?\d{4}$";
 
@@ -29,5 +29,4 @@
 		arguments.context.output.append("validateUsPhone(this,'" & arguments.field.name & "','" & JSStringFormat(HTMLEditFormat(local.errorMsg)) & "');");
 	}
 
-</cfscript>
-</cfcomponent>
+}

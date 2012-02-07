@@ -1,9 +1,10 @@
-<cfcomponent name="Form" output="no">
-<cfscript>
+component name="Form" output="no"
+{
 
-	function init(required name)
+	function init(required name, required alyx)
 	{
-		variables.rc = application.controller.getContext();
+		variables.alyx = arguments.alyx;
+		variables.rc = variables.alyx.getRC();
 		variables.name = arguments.name;
 		variables.errors = ArrayNew(1);
 		variables.successMessage = "";
@@ -11,7 +12,7 @@
 		variables.showClientSideValidationScript = true;
 		variables.encType = "";
 		variables.useFieldset = true;
-		variables.errorHeading = application.controller.getPlugin("snippets").getSnippet("errorheading", "errormessages");
+		variables.errorHeading = variables.alyx.getPlugin("snippets").getSnippet("errorheading", "errormessages");
 		resetFields();
 		return this;
 	}
@@ -61,6 +62,12 @@
 		}
 	}
 
+	public function setFieldAttributes(fieldName, attributes)
+	{
+		this.getField(name = fieldName).putAll(attributes);
+		return this;
+	}
+
 	function removeField(required name)
 	{
 		var local = {};
@@ -105,7 +112,7 @@
 
 	function setFieldType(required name, type = "")
 	{
-		variables.fields[arguments.name].type = arguments.type;
+		return setFieldAttributes(arguments.name, {type = arguments.type});
 	}
 
 	function addDependency(
@@ -680,8 +687,8 @@
 		form = this
 	)
 	{
-		var renderer = application.controller.getPlugin("forms").getRenderer(arguments.type);
-		var errorClass = application.controller.getSetting("formFieldErrorClass", "error");
+		var renderer = variables.alyx.getPlugin("forms").getRenderer(arguments.type);
+		var errorClass = variables.alyx.getSetting("formFieldErrorClass", "error");
 
 		if(StructKeyExists(arguments.field, "errors") && arguments.field.errors.size())
 		{
@@ -711,7 +718,7 @@
 	function getClientSideValidationScript(required context)
 	{
 		var local = {};
-		local.formsPlugin = application.controller.getPlugin("forms");
+		local.formsPlugin = variables.alyx.getPlugin("forms");
 		// Validate field dependencies
 		for (local.dependency in variables.fieldDependencies)
 		{
@@ -761,5 +768,4 @@
 		return "";
 	}
 
-</cfscript>
-</cfcomponent>
+}

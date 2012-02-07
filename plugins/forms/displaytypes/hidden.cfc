@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="_common">
-<cfscript>
+component output="no" extends="_common"
+{
 
 	function render(
 		required field,
@@ -20,5 +20,4 @@
 		return '<input type="hidden" name="#local.fieldName#" id="#local.fieldName#" value="#HtmlEditFormat(arguments.value)#"#arguments.extra# />';
 	}
 
-</cfscript>
-</cfcomponent>
+}

@@ -1,5 +1,5 @@
-<cfcomponent name="Dataset" output="no" hint="Abstracts a data set for use in validating and displaying form fields.">
-<cfscript>
+component name="Dataset" output="no" hint="Abstracts a data set for use in validating and displaying form fields."
+{
 
 	function init(
 		required data,
@@ -40,5 +40,4 @@
 		return Len(variables.groupIdField) > 0;
 	}
 
-</cfscript>
-</cfcomponent>
+}

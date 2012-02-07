@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="_common">
-<cfscript>
+component output="no" extends="_common"
+{
 
 	function doCustomValidations(field, value)
 	{
@@ -84,5 +84,4 @@
 		arguments.context.output.append("validateString(this,'" & arguments.field.name & "','" & JSStringFormat(HTMLEditFormat(local.errorMsg)) & "');");
 	}
 
-</cfscript>
-</cfcomponent>
+}

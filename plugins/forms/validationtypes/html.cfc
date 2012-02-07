@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="string">
-<cfscript>
+component output="no" extends="string"
+{
 
 	private function checkAllowedCharacters(required field, required value)
 	{
@@ -13,5 +13,4 @@
 		// This type allows any character
 	}
 
-</cfscript>
-</cfcomponent>
+}

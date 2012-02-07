@@ -1,5 +1,4 @@
-<cfcomponent output="no" extends="decimal">
-<cfscript>
+component output="no" extends="decimal"
+{
 
-</cfscript>
-</cfcomponent>
+}

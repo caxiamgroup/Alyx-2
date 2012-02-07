@@ -22,6 +22,15 @@
 	{
 		try
 		{
+			if (FileExists(ExpandPath("/Alyx.cfc")))
+			{
+				local.alyx = CreateObject("component", "/Alyx");
+				if (StructKeyExists(local.alyx, "init"))
+				{
+					local.alyx.init();
+				}
+				return local.alyx;
+			}
 			return new Alyx();
 		}
 		catch (Any error)
@@ -246,74 +255,6 @@
 		return local.service;
 	}
 
-
-	/**
-	  * Redirect takes the place of CFLOCATION and allows you to pass the action of where you want to go to.
-	  **/
-	private function redirect(required action, persist = "", persistUrl = "", urlParams = "")
-	{
-		if (Len(arguments.persist))
-		{
-			storePersistentContext(arguments.persist);
-		}
-
-		if (Len(arguments.urlParams) || Len(arguments.persistUrl))
-		{
-			local.urlParams = ListToArray(ListLast(arguments.urlParams, "?"), "&");
-		}
-
-		if (Len(arguments.urlParams))
-		{
-			local.urlParamsLen = ArrayLen(local.urlParams);
-
-			for (local.urlParamIndex = 1; local.urlParamIndex <= local.urlParamsLen; local.urlParamIndex++)
-			{
-				local.urlParam = local.urlParams[local.urlParamIndex];
-				local.urlParamKey = ListFirst(local.urlParam, "=");
-				localPersistsIndex = ListFindNocase(arguments.persistUrl, local.urlParamKey);
-
-				if (localPersistsIndex && StructKeyExists(request.context, local.urlParamKey))
-				{
-					arguments.persistUrl = ListDeleteAt(arguments.persistUrl, localPersistsIndex);
-				}
-			}
-		}
-
-		if (Len(arguments.persistUrl))
-		{
-			local.persistUrl = ListToArray(arguments.persistUrl);
-
-			for (local.currentPersistURL in local.persistUrl)
-			{
-				if (StructKeyExists(request.context, local.currentPersistURL))
-				{
-					ArrayPrepend(local.urlParams, local.currentPersistURL & "=" & request.context[local.currentPersistURL]);
-				}
-			}
-		}
-
-		if (StructKeyExists(local, "urlParams"))
-		{
-			arguments.urlParams = "?" & ArrayToList(local.urlParams, "&");
-		}
-
-		if (ListLen(arguments.action, ".") > 1)
-		{
-			if (ListFirst(arguments.action,".") == "general")
-			{
-				arguments.action = ListRest(arguments.action, ".");
-			}
-
-			arguments.action = "/" & ListChangeDelims(arguments.action, "/", ".");
-		}
-
-		if (Len(arguments.action) && Right(arguments.action, 1) != "/")
-		{
-			arguments.action &= ".cfm";
-		}
-
-		Location(url="#arguments.action##arguments.urlParams#", addtoken="no");
-	}
 
 
 	/**

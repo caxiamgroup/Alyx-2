@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="string">
-<cfscript>
+component output="no" extends="string"
+{
 
 	variables.type = "Decimal";
 
@@ -110,5 +110,4 @@
 		arguments.context.output.append("validate" & variables.type & "(this,'" & arguments.field.name & "','" & JSStringFormat(HTMLEditFormat(local.errorMsg)) & "');");
 	}
 
-</cfscript>
-</cfcomponent>
+}

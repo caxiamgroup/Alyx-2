@@ -1,7 +1,6 @@
-<cfcomponent output="no" extends="text">
-<cfscript>
+component output="no" extends="text"
+{
 
 	variables.type = "password";
 
-</cfscript>
-</cfcomponent>
+}

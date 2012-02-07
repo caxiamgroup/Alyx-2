@@ -1,5 +1,5 @@
-<cfcomponent name="DatasetBean" extends="dataset" output="no">
-<cfscript>
+component name="DatasetBean" extends="dataset" output="no"
+{
 
 	function getCount()
 	{
@@ -18,5 +18,17 @@
 		return value;
 	}
 
-</cfscript>
-</cfcomponent>
+	function getGroupId(row = variables.currentRow)
+	{
+		var value = evaluate("variables.data[arguments.row].get#variables.groupIdField#()");
+		return value;
+	}
+
+	function getGroupLabel(row = variables.currentRow)
+	{
+		var value = evaluate("variables.data[arguments.row].get#variables.groupLabelField#()");
+		
+		return value;
+	}
+
+}

@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="text">
-<cfscript>
+component output="no" extends="text"
+{
 
 	private function formatValue(required value)
 	{
@@ -11,5 +11,4 @@
 		return arguments.value;
 	}
 
-</cfscript>
-</cfcomponent>
+}

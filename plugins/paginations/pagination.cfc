@@ -184,10 +184,10 @@ component name="pagination" accessors="true"
 					}
 				}
 
-				if(StructKeyExists(VARIABLES.rendering, "renderNexPage") AND VARIABLES.pageIndex LT VARIABLES.pageCount )
+				if(StructKeyExists(VARIABLES.rendering, "renderNextPage") AND VARIABLES.pageIndex LT VARIABLES.pageCount )
 				{
 					VARIABLES.serviceArguments['pageIndex'] = local.nextPage;
-					VARIABLES.rendering.renderNexPage(parsedUrlparams = parseURLparams(VARIABLES.serviceArguments), serviceArguments = VARIABLES.serviceArguments);
+					VARIABLES.rendering.renderNextPage(parsedUrlparams = parseURLparams(VARIABLES.serviceArguments), serviceArguments = VARIABLES.serviceArguments);
 				}
 
 				if(StructKeyExists(VARIABLES.rendering, "renderLastPage") AND VARIABLES.endPage NEQ VARIABLES.pageCount + 1)
@@ -227,6 +227,23 @@ component name="pagination" accessors="true"
 			recordPerPage = local.recordPerPage,
 			intervals = local.intervals,
 			pageSize = VARIABLES.pageSize
+		);
+	}
+
+	public function renderOffset(name = "")
+	{
+		local.offsetArgs = {};
+		for (local.key in ListToArray(StructKeyList(variables)))
+		{
+			if (IsSimpleValue(variables[local.key]))
+			{
+				local.offsetArgs[local.key] = variables[local.key];
+			}
+		}
+		local.offsetArgs.objectName = ARGUMENTS.name;
+
+		VARIABLES.rendering.renderOffset(
+			argumentCollection = local.offsetArgs
 		);
 	}
 

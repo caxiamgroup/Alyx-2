@@ -214,21 +214,6 @@ component
 		return local.address;
 	}
 
-	public function getForm(required name)
-	{
-		return application.controller.getPlugin("forms").getForm(arguments.name);
-	}
-
-	public function getProfiler()
-	{
-		return application.controller.getProfiler();
-	}
-
-	public function getSnippet(required snippetId)
-	{
-		return application.controller.getPlugin("snippets").getSnippet(argumentCollection = arguments);
-	}
-
 	public function queryToArray(required data, startRow = "", endRow = "")
 	{
 		var local = {};

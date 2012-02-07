@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="_common">
-<cfscript>
+component output="no" extends="_common"
+{
 
 	function validate(required form, required params)
 	{
@@ -33,5 +33,4 @@
 		arguments.context.output.append("validateGreaterThanOrEqual(this,'" & arguments.params.fields & "','" & JSStringFormat(HTMLEditFormat(local.errorMsg)) & "');");
 	}
 
-</cfscript>
-</cfcomponent>
+}

@@ -1,5 +1,5 @@
-<cfcomponent name="DatasetStructArray" extends="dataset" output="no">
-<cfscript>
+component name="DatasetStructArray" extends="dataset" output="no"
+{
 
 	function getCount()
 	{
@@ -16,5 +16,4 @@
 		return variables.data[arguments.row][variables.labelField];
 	}
 
-</cfscript>
-</cfcomponent>
+}

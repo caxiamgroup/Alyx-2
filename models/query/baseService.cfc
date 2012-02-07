@@ -1,9 +1,10 @@
 ﻿component output="false" extends="alyx.models.baseService"
 {
-	import alyx.java.lib.*;
+	import alyx.java.lib.PagedArray.*;
 
 	public function init()
 	{
+		super.init(ArgumentCollection = arguments);
 		return this;
 	}
 

@@ -28,7 +28,7 @@
 		</cfoutput>
 	</cffunction>
 
-	<cffunction name="renderNexPage">
+	<cffunction name="renderNextPage">
 		<cfoutput>
 			<li class="next"><a href="?#ARGUMENTS.parsedUrlparams#">&rsaquo;</a></li>
 		</cfoutput>
@@ -72,6 +72,10 @@
 				});
 			</script>
 		</cfoutput>
+	</cffunction>
+
+	<cffunction name="renderOffset">
+		<cfoutput>#arguments.startIndex# - #arguments.endIndex# of #arguments.recordCount#</cfoutput>
 	</cffunction>
 
 </cfcomponent>

@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="nomatch">
-<cfscript>
+component output="no" extends="nomatch"
+{
 
 	private function getIgnoreCase()
 	{
@@ -25,5 +25,4 @@
 		arguments.context.output.append("validateNoMatchNoCase(this,'" & arguments.params.fields & "','" & JSStringFormat(HTMLEditFormat(local.errorMsg)) & "');");
 	}
 
-</cfscript>
-</cfcomponent>
+}

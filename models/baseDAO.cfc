@@ -2,8 +2,8 @@
 
 	<cfset variables.RECORDSTATUS_DELETED = 0/>
 	<cfset variables.RECORDSTATUS_ACTIVE  = 1/>
-	<cfset variables.encryptionAlgorithm = "AES"/>
-	<cfset variables.encryptionKey = application.controller.getSetting("encryptionKey")/>
+	<!---<cfset variables.encryptionAlgorithm = "AES"/>
+	<cfset variables.encryptionKey = application.controller.getSetting("encryptionKey")/>--->
 
 	<cffunction name="queryRowToStruct" access="public" output="false" returntype="struct">
 		<cfargument name="qry" type="query"   required="true"/>

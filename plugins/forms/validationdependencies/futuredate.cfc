@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="_common">
-<cfscript>
+component output="no" extends="_common"
+{
 
 	function validate(required form, required params)
 	{
@@ -104,5 +104,4 @@
 		arguments.context.output.append("validateFutureDate(this," & local.date & "," & local.year & "," & local.month & "," & local.day & "," & local.allowToday & ",'" & JSStringFormat(HTMLEditFormat(local.errorMsg)) & "');");
 	}
 
-</cfscript>
-</cfcomponent>
+}

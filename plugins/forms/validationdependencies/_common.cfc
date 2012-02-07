@@ -1,5 +1,5 @@
-<cfcomponent output="no">
-<cfscript>
+component output="no"
+{
 
 	function init()
 	{
@@ -57,5 +57,4 @@
 	{
 	}
 
-</cfscript>
-</cfcomponent>
+}

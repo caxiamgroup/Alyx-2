@@ -1,19 +1,22 @@
-﻿component accessors="true"
+﻿component accessors="true" mappedsuperclass="true"
 {
-	/*property name="controllers" type="struct";
+	property name="controllers" type="struct";
 	property name="services"    type="struct";
 	property name="plugins"     type="struct";
 	property name="views"       type="struct";
 	property name="layouts"     type="struct";
-	property name="settings"    type="struct";*/
+	property name="settings"    type="struct";
 
-	property name="helpers" type="struct";
+	//property name="helpers" type="struct";
 
 	property name="restartPassword" type="string";
 	property name="defaultLayout"   type="string";
 
 	property name="cacheServices"    type="boolean";
 	property name="cacheControllers" type="boolean";
+
+	property name="mainEnvironment" type="string" default="prod";
+	property name="developmentURL"  type="string" default="caxiamgroup.net";
 
 	variables.PERSISTENT_CONTEXT_KEY = "persistentContext";
 
@@ -22,15 +25,24 @@
 		MESSAGE = "The helper \1 does not exist in either the project location or Alyx.  Please figure this out ASAP!"
 	);
 
-	variables.NONEXISTANT_HELPER_ERROR = {
+	variables.NONEXISTANT_HELPER_ERROR = createCustomException(
 		TYPE = "ALYX.NONEXISTANT_HELPER_ERROR",
 		MESSAGE = "The helper \1 does not exist in either the project location or Alyx.  Please figure this out ASAP!"
-	};
+	);
 
 
 	public function createCustomException(type="", message="", detail="", code="", extendedInfo="")
 	{
-		return createObject("java", "coldfusion.runtime.CustomException").init(
+		try
+		{
+			local.exceptionClass = createObject("java", "coldfusion.runtime.CustomException");
+		}
+		catch("railo.commons.lang.ClassException" Error)
+		{
+			local.exceptionClass = createObject("java", "railo.runtime.exp.CustomTypeException");
+		}
+
+		return local.exceptionClass.init(
 			arguments.type,
 			arguments.message,
 			arguments.detail,
@@ -41,10 +53,10 @@
 
 	public function init()
 	{
-		clearHelpers();
-		initHelpers();
+		//clearHelpers();
+		//initHelpers();
 		setPropertyDefaultValues(this);
-		/*clearControllers();
+		clearControllers();
 		clearServices();
 		clearPlugins();
 		clearViews();
@@ -53,9 +65,8 @@
 		loadSettings();
 		storeFrameworkSettings();
 		initPlugins();
-		request.frameworkInitialized = true;*/
-		writeDump(this);
-		abort;
+		request.frameworkInitialized = true;
+
 		return this;
 	}
 
@@ -125,8 +136,8 @@
 
 	public function getEnvironment()
 	{
-		local.environment = getMainEnvironment();
-		local.devUrl = getDevelopmentURL();
+		local.environment = this.getMainEnvironment();
+		local.devUrl = this.getDevelopmentURL();
 
 		if (cgi.http_host contains "localhost" || ( !IsNull(local.devUrl) && Len(local.devUrl) && cgi.http_host contains local.devUrl ))
 		{
@@ -156,15 +167,6 @@
 	{
 	}
 
-	public function getRC()
-	{
-		if (!StructKeyExists(request, "context"))
-		{
-			request.context = {};
-		}
-		return request.context;
-	}
-
 	public function setupRequestStart()
 	{
 		new alyx.tags.setting(showDebugOutput = false);
@@ -187,6 +189,15 @@
 
 	public function setupRequest()
 	{
+	}
+
+	public function getRC()
+	{
+		if (!StructKeyExists(request, "context"))
+		{
+			request.context = {};
+		}
+		return request.context;
 	}
 
 	public function renderRequest()
@@ -219,10 +230,84 @@
 		}
 	}
 
-	public function getPlugin(name)
+	public function getPlugin(required name)
 	{
 		return variables.plugins[arguments.name];
 	}
+
+	public function getService(required name)
+	{
+		local.service = "";
+
+		if (StructKeyExists(variables.services, arguments.name) && variables.cacheServices)
+		{
+			local.service = variables.services[arguments.name];
+		}
+		else
+		{
+			lock name="variables.services.#arguments.name#" type="exclusive" timeout="20"
+			{
+				if (StructKeyExists(variables.services, arguments.name) && variables.framework.cacheServices)
+				{
+					local.service = application.framework.services[arguments.name];
+				}
+				else
+				{
+					local.servicePath = getServicePath(service = arguments.name);
+
+					if (Len(local.servicePath))
+					{
+						local.service = CreateObject("component", local.servicePath).init(alyx = this);
+
+
+						if (variables.cacheServices)
+						{
+							variables.services[arguments.name] = local.service;
+						}
+					}
+				}
+			}
+		}
+
+		return local.service;
+	}
+
+	private function getServicePath(required service)
+	{
+		var local = {};
+
+		local.serviceComponentPath = "";
+		local.path = ListChangeDelims(arguments.service, "/", ".");
+		local.action = ListChangeDelims(arguments.service, ".", "/");
+		local.componentName = ListLast(local.path, "/");
+		local.serviceAction = local.action & "." & local.componentName & "Service";
+
+		if (FileExists(ExpandPath("/models/" & local.path & "/" & local.componentName & "Service.cfc")))
+		{
+			local.serviceComponentPath = "/models." & local.serviceAction;
+		}
+		else if (StructKeyExists(variables.models, local.serviceAction))
+		{
+			local.serviceComponentPath = variables.models[local.serviceAction];
+		}
+		else if (ListLen(local.action, ".") > 1)
+		{
+			local.moduleName = ListFirst(arguments.service, ".");
+			local.modules = getModules();
+
+			if (StructKeyExists(local.modules, local.moduleName))
+			{
+				local.path = ListChangeDelims(ListRest(arguments.service,"."), "/", ".");
+				if (FileExists(ExpandPath("/alyx/modules/" & local.modules[local.moduleName].name & "/models/" & local.path  & "/" & local.componentName & "Service.cfc")))
+				{
+					local.serviceComponentPath = "/alyx.modules." & local.modules[local.moduleName].name & ".models." & ListChangeDelims(local.path, ".", "/") & "." & local.componentName & "Service";
+				}
+			}
+		}
+
+		return local.serviceComponentPath;
+	}
+
 
 	public function getViewPath(view)
 	{
@@ -396,13 +481,36 @@
 		return local.plugin;
 	}
 
+	public function arrayMerge(arrayTo, arrayFrom)
+	{
+		for (local.value in arguments.arrayFrom)
+		{
+			ArrayAppend(arguments.arrayTo, Duplicate(local.value));
+		}
+		return arguments.arrayTo;
+	}
+
 	private function getProperties(required object)
 	{
-		local.properties = {};
-		local.metadata = getMetadata(arguments.object);
-		if (StructKeyExists(local.metadata, "properties"))
+		local.properties = [];
+		local.metadata = {extends = getMetadata(arguments.object)};
+
+		do
 		{
-			local.properties = CreateObject("java", "java.util.Arrays").asList(local.metadata.properties);
+			local.metadata = local.metadata.extends;
+
+			local.properties = ArrayMerge(local.properties,getPropertiesFromMetadata(local.metadata));
+		} while (StructKeyExists(local.metadata, "EXTENDS"));
+		CreateObject("java", "java.util.Collections").reverse(local.properties);
+		return local.properties;
+	}
+
+	private function getPropertiesFromMetadata(metadata)
+	{
+		local.properties = [];
+		if (StructKeyExists(arguments.metadata, "properties"))
+		{
+			local.properties = CreateObject("java", "java.util.Arrays").asList(arguments.metadata.properties);
 		}
 		return local.properties;
 	}
@@ -717,6 +825,71 @@
 		}
 
 		return fw_out;
+	}
+
+	public function redirect(required action, persist = "", persistUrl = "", urlParams = "")
+	{
+		if (Len(arguments.persist))
+		{
+			storePersistentContext(arguments.persist);
+		}
+
+		if (Len(arguments.urlParams) || Len(arguments.persistUrl))
+		{
+			local.urlParams = ListToArray(ListLast(arguments.urlParams, "?"), "&");
+		}
+
+		if (Len(arguments.urlParams))
+		{
+			local.urlParamsLen = ArrayLen(local.urlParams);
+
+			for (local.urlParamIndex = 1; local.urlParamIndex <= local.urlParamsLen; local.urlParamIndex++)
+			{
+				local.urlParam = local.urlParams[local.urlParamIndex];
+				local.urlParamKey = ListFirst(local.urlParam, "=");
+				localPersistsIndex = ListFindNocase(arguments.persistUrl, local.urlParamKey);
+
+				if (localPersistsIndex && StructKeyExists(request.context, local.urlParamKey))
+				{
+					arguments.persistUrl = ListDeleteAt(arguments.persistUrl, localPersistsIndex);
+				}
+			}
+		}
+
+		if (Len(arguments.persistUrl))
+		{
+			local.persistUrl = ListToArray(arguments.persistUrl);
+
+			for (local.currentPersistURL in local.persistUrl)
+			{
+				if (StructKeyExists(request.context, local.currentPersistURL))
+				{
+					ArrayPrepend(local.urlParams, local.currentPersistURL & "=" & request.context[local.currentPersistURL]);
+				}
+			}
+		}
+
+		if (StructKeyExists(local, "urlParams"))
+		{
+			arguments.urlParams = "?" & ArrayToList(local.urlParams, "&");
+		}
+
+		if (ListLen(arguments.action, ".") > 1)
+		{
+			if (ListFirst(arguments.action,".") == "general")
+			{
+				arguments.action = ListRest(arguments.action, ".");
+			}
+
+			arguments.action = "/" & ListChangeDelims(arguments.action, "/", ".");
+		}
+
+		if (Len(arguments.action) && Right(arguments.action, 1) != "/")
+		{
+			arguments.action &= ".cfm";
+		}
+
+		Location(url="#arguments.action##arguments.urlParams#", addtoken="no");
 	}
 
 }

@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="string">
-<cfscript>
+component output="no" extends="string"
+{
 
 	private function checkAllowedCharacters(required field, required value)
 	{
@@ -27,5 +27,4 @@
 		arguments.context.output.append("validateEmail(this,'" & arguments.field.name & "','" & JSStringFormat(HTMLEditFormat(local.errorMsg)) & "');");
 	}
 
-</cfscript>
-</cfcomponent>
+}

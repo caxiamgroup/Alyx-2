@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="_common">
-<cfscript>
+component output="no" extends="_common"
+{
 
 	function render(
 		required field,
@@ -101,5 +101,4 @@
 		return '<select name="#local.fieldName#" id="#arguments.id#"#arguments.extra#>' & local.options & '</select>';
 	}
 
-</cfscript>
-</cfcomponent>
+}

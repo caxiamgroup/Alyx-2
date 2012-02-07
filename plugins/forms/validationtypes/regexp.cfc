@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="string">
-<cfscript>
+component output="no" extends="string"
+{
 
 	variables.error = "invalidchars";
 
@@ -71,5 +71,4 @@
 		arguments.context.output.append("validateRegExp(this,'" & arguments.field.name & "','" & JSStringFormat(HTMLEditFormat(local.regexp)) & "','" & JSStringFormat(HTMLEditFormat(local.errorMsg)) & "');");
 	}
 
-</cfscript>
-</cfcomponent>
+}

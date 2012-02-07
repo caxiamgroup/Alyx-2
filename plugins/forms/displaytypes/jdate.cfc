@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="text">
-<cfscript>
+component output="no" extends="text"
+{
 
 	function render(
 		required field,
@@ -11,9 +11,9 @@
 	{
 		if (arguments.showCalendar)
 		{
-			if (arguments.extra contains "class=""")
+			if (arguments.extra.matches("^.*class=[""'].*"))
 			{
-				arguments.extra = Replace(arguments.extra, "class=""", "class=""dateinput ");
+				arguments.extra = REReplace(arguments.extra, "class=([""'])", "class=\1dateinput ","all");
 			}
 			else
 			{
@@ -35,5 +35,4 @@
 		return arguments.value;
 	}
 
-</cfscript>
-</cfcomponent>
+}

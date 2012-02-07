@@ -1,5 +1,5 @@
-<cfcomponent output="no">
-<cfscript>
+component output="no"
+{
 
 	function init(required alyx)
 	{
@@ -71,5 +71,4 @@
 		}
 	}
 
-</cfscript>
-</cfcomponent>
+}

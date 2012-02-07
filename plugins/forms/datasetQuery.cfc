@@ -1,5 +1,5 @@
-<cfcomponent name="DatasetQuery" extends="dataset" output="no">
-<cfscript>
+component name="DatasetQuery" extends="dataset" output="no"
+{
 
 	function getCount()
 	{
@@ -26,5 +26,4 @@
 		return variables.data[variables.groupLabelField][arguments.row];
 	}
 
-</cfscript>
-</cfcomponent>
+}

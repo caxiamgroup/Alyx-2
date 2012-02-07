@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="_common">
-<cfscript>
+component output="no" extends="_common"
+{
 
 	function render(
 		required field,
@@ -27,22 +27,20 @@
 		arguments.fieldName = local.fieldName;
 		return local.textArea & getCKSetttings(ArgumentCollection = arguments);
 	}
-</cfscript>
-<cffunction name="getCKSetttings">
-<cfsavecontent variable="local.ckSettings">
-<cfoutput>
-	<script>
-		$("###arguments.fieldName#").ckeditor({
-			customConfig : '/media/js/ckeditor.config.js',
-			toolbar      : 'CgBoMin',
-			skin		   : 'cgbo',
-			height       : '#arguments.height#px',
-			width       : '#arguments.width#px',
-			dialog_backgroundCoverColor : 'rgb(0, 0, 0)'
-		});
-	</script>
-</cfoutput>
-</cfsavecontent>
-<cfreturn local.ckSettings />
-</cffunction>
-</cfcomponent>
+
+	public function getCKSetttings()
+	{
+		savecontent variable="local.ckSettings"
+		{
+			writeOutput("$(""###arguments.fieldName#"").ckeditor({
+				customConfig : '/media/js/ckeditor.config.js',
+				toolbar      : 'CgBoMin',
+				skin		   : 'cgbo',
+				height       : '#arguments.height#px',
+				width       : '#arguments.width#px',
+				dialog_backgroundCoverColor : 'rgb(0, 0, 0)'
+			});");
+		}
+		return local.ckSettings;
+	}
+}

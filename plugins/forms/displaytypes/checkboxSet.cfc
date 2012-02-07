@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="_common">
-<cfscript>
+component output="no" extends="_common"
+{
 
 	function render(
 		required field,
@@ -61,5 +61,4 @@
 		return local.output;
 	}
 
-</cfscript>
-</cfcomponent>
+}

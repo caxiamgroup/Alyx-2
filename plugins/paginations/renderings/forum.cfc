@@ -22,7 +22,7 @@
 		</cfoutput>
 	</cffunction>
 
-	<cffunction name="renderNexPage">
+	<cffunction name="renderNextPage">
 		<cfoutput>
 			<a href="?#ARGUMENTS.parsedUrlparams#"><span class="next" title="Next">&nbsp;</span></a>
 		</cfoutput>

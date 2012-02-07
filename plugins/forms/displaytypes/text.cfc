@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="_common">
-<cfscript>
+component output="no" extends="_common"
+{
 
 	variables.type = "text";
 
@@ -38,5 +38,4 @@
 		return arguments.value;
 	}
 
-</cfscript>
-</cfcomponent>
+}

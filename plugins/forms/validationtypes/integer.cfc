@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="numeric">
-<cfscript>
+component output="no" extends="numeric"
+{
 
 	private function checkAllowedCharacters(required field, required value)
 	{
@@ -27,5 +27,4 @@
 		arguments.context.output.append("validateInteger(this,'" & arguments.field.name & "','" & JSStringFormat(HTMLEditFormat(local.errorMsg)) & "');");
 	}
 
-</cfscript>
-</cfcomponent>
+}

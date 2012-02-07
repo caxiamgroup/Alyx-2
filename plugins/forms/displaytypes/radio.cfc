@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="_common">
-<cfscript>
+component output="no" extends="_common"
+{
 
 	function render(
 		required field,
@@ -35,5 +35,4 @@
 		return '<input type="radio" name="#local.fieldName#" id="#arguments.form.getName()#_#arguments.id#" value="#arguments.value#"#arguments.extra# />';
 	}
 
-</cfscript>
-</cfcomponent>
+}

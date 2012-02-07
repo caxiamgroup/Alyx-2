@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="_common">
-<cfscript>
+component output="no" extends="_common"
+{
 
 	function render(
 		required field,
@@ -21,5 +21,4 @@
 		return '<textarea rows="#arguments.rows#" cols="#arguments.cols#" name="#local.fieldName#" id="#local.fieldName#"#arguments.extra#>#arguments.form.getFieldValue(arguments.field.name)#</textarea>';
 	}
 
-</cfscript>
-</cfcomponent>
+}

@@ -127,14 +127,14 @@
 	<cffunction name="getForm" output="no">
 		<cfargument name="name" required="yes"/>
 
-		<cfset var rc =  variables.alyx.getContext()/>
+		<cfset var rc =  variables.alyx.getRC()/>
 
 		<cfif not StructKeyExists(rc, "forms")>
 			<cfset rc.forms = StructNew()/>
 		</cfif>
 
 		<cfif not StructKeyExists(rc.forms, arguments.name)>
-			<cfset rc.forms[arguments.name] = CreateObject("component", variables.formComponentLocation).init(name = arguments.name)/>
+			<cfset rc.forms[arguments.name] = CreateObject("component", variables.formComponentLocation).init(name = arguments.name, alyx = variables.alyx)/>
 		</cfif>
 
 		<cfreturn rc.forms[arguments.name]/>
@@ -158,7 +158,7 @@
 	<cffunction name="getClientSideValidationScript" output="no">
 		<cfset var local = StructNew()/>
 
-		<cfset local.rc =  variables.alyx.getContext()/>
+		<cfset local.rc =  variables.alyx.getRC()/>
 
 		<cfif not StructKeyExists(local.rc, "forms")>
 			<cfreturn ""/>
@@ -373,7 +373,10 @@
 				<cfset ArrayAppend(local.data, local.temp)/>
 			</cfcase>
 			<cfdefaultcase>
-				<cfset local.data = ListToArray(local.snippetsPlugin.getSnippet(arguments.type))/>
+				<cfset local.data = local.snippetsPlugin.getSnippet(arguments.type) />
+				<cfif NOT ListLen(local.snippetsPlugin.getSnippet(arguments.type), "|")>
+					<cfset local.data = ListToArray(local.data)/>
+				</cfif>				
 			</cfdefaultcase>
 		</cfswitch>
 

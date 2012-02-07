@@ -1,5 +1,5 @@
-<cfcomponent output="no" extends="text">
-<cfscript>
+component output="no" extends="text"
+{
 
 	function render(required field, size = 10, showCalendar = true)
 	{
@@ -24,5 +24,4 @@
 		return arguments.value;
 	}
 
-</cfscript>
-</cfcomponent>
+}
