@@ -3,10 +3,12 @@
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 4, 0, 0);
 
-	this.mappings["/alyx"] = ReReplace(GetDirectoryFromPath(GetCurrentTemplatePath()), "(\\|/)core(\\|/){0,1}$", "");
-	this.mappings["/alyx2"] = this.mappings["/alyx"]; //temporary fix
-
 	this.ALYX_KEY = "ALYX";
+
+	this.mappings["controllers"] = ExpandPath( getBasePath() & "/controllers/" );
+	this.mappings["models"] = ExpandPath( getBasePath() & "/models/" );
+	this.mappings["plugins"] = ExpandPath( getBasePath() & "/plugins/" );
+
 
 	private function getAlyx()
 	{
@@ -289,7 +291,8 @@
 	  **/
 	private function onMissingView(required action)
 	{
-		if (isDevEnvironment())
+		local.alyx = getAlyx();
+		if (local.alyx.isDevEnvironment())
 		{
 			Throw(message = "Missing View: #arguments.action#");
 		}
@@ -364,5 +367,23 @@
 			}
 		}
 		return local.output;
+	}
+	
+	
+	private function getBaseTemplateDirectory()
+	{
+		return getDirectoryFromPath(getBaseTemplatePath());
+	}
+	
+	
+	private function getBasePath()
+	{
+		local.folderLocation = Replace(getBaseTemplateDirectory(), ExpandPath("/"), "");
+		local.basePath = ReReplace(local.folderLocation, "[\/\\]$", "");
+		if (Len(local.basePath))
+		{
+			local.basePath = "/" & local.basePath;
+		}
+		return local.basePath;
 	}
 }

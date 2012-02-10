@@ -20,6 +20,7 @@
 
 	import alyx.tags.*;
 
+
 	variables.PERSISTENT_CONTEXT_KEY = "persistentContext";
 
 	variables.newError = createCustomException(
@@ -31,7 +32,6 @@
 		TYPE = "ALYX.NONEXISTANT_HELPER_ERROR",
 		MESSAGE = "The helper \1 does not exist in either the project location or Alyx.  Please figure this out ASAP!"
 	);
-
 
 	public function createCustomException(type="", message="", detail="", code="", extendedInfo="")
 	{
@@ -156,7 +156,7 @@
 	}
 
 
-	public function getSetting(name, defaultValue = "")
+	public function getSetting(required name, defaultValue = "")
 	{
 		return ( StructKeyExists(variables.settings, arguments.name) ) ? variables.settings[arguments.name] : arguments.defaultValue;
 	}
@@ -330,17 +330,30 @@
 		return local.serviceComponentPath;
 	}
 
+	private function getBasePath()
+	{
+		local.folderLocation = Replace(getBaseTemplateDirectory(), ExpandPath("/"), "");
+		local.basePath = ReReplace(local.folderLocation, "[\/\\]$", "");
+		if (Len(local.basePath))
+		{
+			local.basePath = "/" & local.basePath;
+		}
+		return local.basePath;
+	}
 
 	public function getViewPath(view)
 	{
 		arguments.view = ReReplace(arguments.view, "^/", "");
 
-		local.view = "/views/" & arguments.view;
+		local.view = getBasePath() & "/views/" & arguments.view;
+
 
 		if (StructKeyExists(variables.views, arguments.view))
 		{
 			local.view = variables.views[arguments.view];
 		}
+
+
 
 		return local.view;
 	}
@@ -349,7 +362,7 @@
 	{
 		arguments.layout = ReReplace(arguments.layout, "^/", "");
 
-		local.layout = "/layouts/" & arguments.layout;
+		local.layout = getBasePath() & "/layouts/" & arguments.layout;
 
 		if (StructKeyExists(variables.layouts, arguments.layout))
 		{
@@ -470,13 +483,14 @@
 			*/
 			local.path = "/alyx.plugins";
 			local.environment = getEnvironment();
-			if (Len(local.environment) && FileExists(ExpandPath("/plugins/" & local.environment & "/" & arguments.name & "/" & arguments.name & ".cfc")))
+			local.basePath = getBasePath();
+			if (Len(local.environment) && FileExists(ExpandPath(local.basePath & "/plugins/" & local.environment & "/" & arguments.name & "/" & arguments.name & ".cfc")))
 			{
-				local.path = "/plugins." & local.environment;
+				local.path = local.basePath & "/plugins." & local.environment;
 			}
-			else if (FileExists(ExpandPath("/plugins/"  & arguments.name & "/" & arguments.name & ".cfc")))
+			else if (FileExists(ExpandPath(local.basePath & "/plugins/"  & arguments.name & "/" & arguments.name & ".cfc")))
 			{
-				local.path = "/plugins";
+				local.path = local.basePath & "/plugins";
 			}
 		}
 
@@ -537,6 +551,11 @@
 		return local.properties;
 	}
 
+	private function getBaseTemplateDirectory()
+	{
+		return getDirectoryFromPath(getBaseTemplatePath());
+	}
+
 	private function initActionFromURL()
 	{
 		if (StructKeyExists(url, "action"))
@@ -546,7 +565,8 @@
 		else
 		{
 			// Turn file request into implicit action
-			url.action = ListChangeDelims(ListFirst(cgi.script_name, "."), ".", "/");
+			local.currentPagePath = Replace(cgi.path_translated, getBaseTemplateDirectory(), "");
+			url.action = ListChangeDelims(ListFirst(local.currentPagePath, "."), ".", "/");
 		}
 
 		request.view = url.action;
@@ -696,7 +716,6 @@
 				}
 				else
 				{
-					/* HERE IS WHERE WE ARE*/
 					local.controllerPath = getControllerPath(local.name);
 
 					if (Len(local.controllerPath))
@@ -725,10 +744,11 @@
 	{
 		local.controllerPath = "";
 		local.path = ListChangeDelims(arguments.name, "/", ".");
+		local.basePath = getBasePath();
 
-		if (FileExists(ExpandPath("/controllers/" & local.path & ".cfc")))
+		if (FileExists(ExpandPath(local.basePath & "/controllers/" & local.path & ".cfc")))
 		{
-			local.controllerPath = "/controllers." & arguments.name;
+			local.controllerPath = local.basePath & "." & "controllers." & arguments.name;
 		}
 		else if(StructKeyExists(variables.controllers, arguments.name))
 		{
