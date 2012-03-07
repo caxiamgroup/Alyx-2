@@ -748,7 +748,11 @@
 
 		if (FileExists(ExpandPath(local.basePath & "/controllers/" & local.path & ".cfc")))
 		{
-			local.controllerPath = local.basePath & "." & "controllers." & arguments.name;
+			if (Len(local.basePath))
+			{
+				local.controllerPath &= local.basePath & ".";
+			}
+			local.controllerPath &= "controllers." & arguments.name;
 		}
 		else if(StructKeyExists(variables.controllers, arguments.name))
 		{
