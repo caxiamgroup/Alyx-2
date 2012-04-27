@@ -1,6 +1,6 @@
 ﻿component output="false" extends="alyx.models.baseService"
 {
-	import alyx.java.lib.PagedArray.*;
+	import alyx.javalib.PagedArray.*;
 
 	public function init()
 	{
@@ -52,16 +52,23 @@
 
 	package function queryToArray(data, queryArguments = StructNew())
 	{
+		//temp solution for railo
+		local.results = [];
 
-		local.results = new PagedArray();
+		if (!StructKeyExists(Server, "railo"))
+		{
+			local.results = new PagedArray();
+		}
 
 		local.numRows = arguments.data.recordcount;
 		local.columns = ListToArray(arguments.data.columnList);
 		local.numColumns = ArrayLen(local.columns);
+		if (!StructKeyExists(Server, "railo"))
+		{
+			local.results.setRecordCount(local.numRows);
+		}
 
-		local.results.setRecordCount(local.numRows);
-
-		if(StructKeyExists(arguments.queryArguments, "pageIndex") && StructKeyExists(arguments.queryArguments, "pageSize"))
+		if(!StructKeyExists(Server, "railo") && StructKeyExists(arguments.queryArguments, "pageIndex") && StructKeyExists(arguments.queryArguments, "pageSize"))
 		{
 			local.results.setRecordCount(variables.dao.getResultRecordCount());
 			local.results.setPageSize(arguments.queryArguments.pageSize);

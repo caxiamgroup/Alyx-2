@@ -1,4 +1,4 @@
-﻿component extends="alyx2.java.lib.JavaClassLoader"
+﻿component extends="alyx.test.lib.JavaClassLoader"
 {
 	this.fileName = "PagedArray";
 	this.name = "00000000-0000-0000-0000000000000000-PAGEDARRAY";
@@ -7,6 +7,8 @@
 
 	public function init()
 	{
+		writeDump(this);
+		abort;
 		super.init();
 		return PagedArray();
 	}

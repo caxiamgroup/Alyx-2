@@ -314,6 +314,8 @@ component name="Form" output="no"
 			local.validator = local.formsPlugin.getDependencyValidator(local.dependency.type);
 			local.validator.validate(this, local.dependency);
 		}
+
+		return this;
 	}
 
 	function getFields()
