@@ -353,8 +353,6 @@
 			local.view = variables.views[arguments.view];
 		}
 
-
-
 		return local.view;
 	}
 
@@ -553,7 +551,7 @@
 
 	private function getBaseTemplateDirectory()
 	{
-		return getDirectoryFromPath(getBaseTemplatePath());
+		return GetDirectoryFromPath(GetCurrentTemplatePath());
 	}
 
 	private function initActionFromURL()
@@ -564,9 +562,11 @@
 		}
 		else
 		{
+
 			// Turn file request into implicit action
 			local.currentPagePath = Replace(cgi.path_translated, getBaseTemplateDirectory(), "");
-			url.action = ListChangeDelims(ListFirst(local.currentPagePath, "."), ".", "/");
+
+			url.action = ListChangeDelims(ListChangeDelims(ListFirst(local.currentPagePath, "."), "\", "/"),".", "\");
 		}
 
 		request.view = url.action;
@@ -608,6 +608,7 @@
 
 		if (StructKeyExists(arguments, "action"))
 		{
+
 			arguments.action = validateAction(arguments.action);
 
 			local.view = request.view;
@@ -615,6 +616,7 @@
 				action = arguments.action,
 				vc = local.vc
 			);
+
 
 			if (request.view != local.view)
 			{
